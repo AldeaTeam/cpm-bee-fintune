@@ -203,6 +203,7 @@ class Paper:
         doc = self.pdf  # 打开pdf文件
         texts = []
         title_font = {}
+        temp_font_size =0
         for page_index, page in enumerate(doc):  # 遍历每一页
             text = page.get_text("dict")  # 获取页面上的文本信息
             blocks = text["blocks"]  # 获取文本块列表
@@ -212,7 +213,10 @@ class Paper:
                         for span in line['spans']:
                             text = span['text']
                             if 'INTRODUCTION' in text.replace('\n', '').upper():
-                                title_font ={"text": span["text"], "size": span["size"], "flags": self._flags_decomposer(span["flags"])}
+                                cur_font_size = float(span["size"])
+                                if  cur_font_size > temp_font_size:
+                                    temp_font_size = cur_font_size
+                                    title_font ={"text": span["text"], "size": span["size"], "flags": self._flags_decomposer(span["flags"])}
                             if len(text) > 1:
                                 texts.append({"text": span["text"], "size": span["size"], "flags": self._flags_decomposer(span["flags"])})
         for text in texts:
@@ -239,8 +243,8 @@ class Paper:
         return ", ".join(l)
     
 if __name__=="__main__":
-    paper_path="../data/48.pdf"
-    output="../data/48_1.json"
+    paper_path="../data/19.pdf"
+    output="../data/19.json"
 
     paper = Paper(path=paper_path,
                   title="",
